@@ -1,5 +1,5 @@
 
-# KTdashboard - monitor your Kernel Tuner runs!
+# KTdashboard - monitor your Kernel Tuner runs
 
 KTdashboard allows you to monitor, analyze, and visualize an active or completed auto-tuning run of [Kernel 
 Tuner](https://github.com/benvanwerkhoven/kernel_tuner/), a tool for automatic optimization of CPU and GPU computational 
@@ -33,6 +33,12 @@ powerful things, such as continuing where it had left off in a previous tuning s
 benchmarking search algorithms and hyperparameter optimization. Because Kernel Tuner appends new results to the cache during 
 benchmarking, KTdashboard can use this to keep track of the results collected so far and monitor your auto-tuning experiments 
 for new results as they come in.
+
+When you are using Kernel Tuner for a long auto-tuning run be sure to use the option ``cache=my_cache_filename.json``. This 
+allows you to monitor the tuner's progress using:
+```
+ktdashboard my_cache_filename.json
+```
 
 ## License, contributions, citation
 
