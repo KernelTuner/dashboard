@@ -1,12 +1,13 @@
+#!/usr/bin/env python
+import json
+import sys
 import os
-from kernel_tuner import read_cache # actually kernel_tuner.util read_cache
 
 import panel as pn
 import panel.widgets as pnw
 import pandas as pd
 from bokeh.models import HoverTool, LinearColorMapper
 from bokeh.plotting import ColumnDataSource, figure
-pn.extension()
 
 
 class KTdashboard:
@@ -15,9 +16,18 @@ class KTdashboard:
     def __init__(self, cache_file, demo=False):
         self.demo = demo
         self.cache_file = cache_file
+
         # read in the cachefile
-        self.cache_last_modified = os.stat(cache_file).st_mtime
-        cached_data = read_cache(cache_file, open_cache=False)
+        self.cache_file_handle = open(cache_file, "r")
+        filestr = self.cache_file_handle.read().strip()
+        # if file was not properly closed, pretend it was properly closed
+        if not filestr[-3:] == "}\n}":
+            # remove the trailing comma if any, and append closing brackets
+            if filestr[-1] == ",":
+                filestr = filestr[:-1]
+            filestr = filestr + "}\n}"
+
+        cached_data = json.loads(filestr)
         self.kernel_name = cached_data["kernel_name"]
         self.device_name = cached_data["device_name"]
 
@@ -57,12 +67,17 @@ class KTdashboard:
         self.xvariable = pnw.Select(name='X', value='index', options=['index']+single_value_keys)
         self.colorvariable = pnw.Select(name='Color By', value='GFLOP/s', options=single_value_keys)
 
+        # connect widgets with the function that draws the scatter plot
         self.scatter = pn.bind(self.make_scatter, xvariable=self.xvariable, yvariable=self.yvariable, color_by=self.colorvariable)
 
+        # actually build up the dashboard
         self.dashboard = pn.template.BootstrapTemplate(title='Kernel Tuner Dashboard')
         self.dashboard.sidebar.append(pn.Column(self.yvariable, self.xvariable, self.colorvariable))
         self.dashboard.main.append(self.scatter)
         self.dashboard.servable()
+
+    def __del__(self):
+        self.cache_file_handle.close()
 
     def update_colors(self, color_by):
         color_mapper = LinearColorMapper(palette='Viridis256', low=min(self.data_df[color_by]),
@@ -71,7 +86,6 @@ class KTdashboard:
         return color
 
     def make_scatter(self, xvariable, yvariable, color_by):
-
         color = self.update_colors(color_by)
 
         x = xvariable
@@ -91,15 +105,21 @@ class KTdashboard:
         self.source.stream(stream_dict)
 
     def update_data(self):
-        if os.stat(self.cache_file).st_mtime > self.cache_last_modified:
-            cached_data = read_cache(self.cache_file, open_cache=False)
+        if not self.demo:
+            new_contents = self.cache_file_handle.read().strip()
+            if new_contents:
 
-            data = list(cached_data["cache"].values())
-            data = [d for d in data if d["time"] != 1e20]
+                # process new contents (parse as JSON, make into dict that goes into source.stream)
+                new_contents_json = "{" + new_contents[:-1] + "}"
+                new_data = list(json.loads(new_contents_json).values())
 
-            # stream the data that has not been streamed yet
-            self.source.stream(pd.DataFrame([data[self.index:]])) # this may not work, we might need to convert it into a dict like in update_plot
-            self.index = len(self.data)
+                for i,element in enumerate(new_data):
+
+                    stream_dict = {k:[v] for k,v in dict(element, index=self.index+i).items() if k in ['index']+self.single_value_keys}
+                    self.source.stream(stream_dict)
+
+                self.index += len(new_data)
+
         if self.demo:
             if self.index < (len(self.data)-1):
                 self.update_plot(self.index)
@@ -135,11 +155,10 @@ if __name__ == "__main__":
         if os.path.isfile(sys.argv[2]):
             filename = sys.argv[2]
 
-
     db = KTdashboard(filename, demo=demo)
 
     def dashboard_f():
+        """ wrapper function to add the callback, doesn't work without this construct """
         pn.state.add_periodic_callback(db.update_data, 1000)
         return db.dashboard
-
     server = pn.serve(dashboard_f)
