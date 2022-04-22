@@ -35,10 +35,10 @@ class KTdashboard:
         data = list(cached_data["cache"].values())
         data = [d for d in data if d["time"] != 1e20]
 
-        # use all data or just the first 1000 in demo mode
+        # use all data or just the first 1% in demo mode
         self.index = len(data)
         if self.demo:
-            self.index = 1000
+            self.index = len(data)//100
 
         # figure out which keys are interesting
         single_value_tune_param_keys = [key for key in cached_data["tune_params_keys"] if len(cached_data["tune_params"][key]) == 1]
@@ -134,7 +134,9 @@ def print_usage():
     exit(0)
 
 
-if __name__ == "__main__":
+
+def cli():
+    """ implements the command-line interface to start the dashboard """
 
     if len(sys.argv) < 2:
         print_usage()
@@ -162,3 +164,8 @@ if __name__ == "__main__":
         pn.state.add_periodic_callback(db.update_data, 1000)
         return db.dashboard
     server = pn.serve(dashboard_f)
+
+
+
+if __name__ == "__main__":
+    cli()
