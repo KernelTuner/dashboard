@@ -62,10 +62,17 @@ class KTdashboard:
 
         self.plot_options = plot_options
 
+        # find default key
+        default_key = 'GFLOP/s'
+        if default_key not in single_value_keys:
+            default_key = 'time'  # Check if time is defined
+            if default_key not in single_value_keys:
+                default_key = single_Value_keys[0]
+
         # setup widgets
-        self.yvariable = pnw.Select(name='Y', value='GFLOP/s', options=single_value_keys)
+        self.yvariable = pnw.Select(name='Y', value=default_key, options=single_value_keys)
         self.xvariable = pnw.Select(name='X', value='index', options=['index']+single_value_keys)
-        self.colorvariable = pnw.Select(name='Color By', value='GFLOP/s', options=single_value_keys)
+        self.colorvariable = pnw.Select(name='Color By', value=default_key, options=single_value_keys)
 
         # connect widgets with the function that draws the scatter plot
         self.scatter = pn.bind(self.make_scatter, xvariable=self.xvariable, yvariable=self.yvariable, color_by=self.colorvariable)
