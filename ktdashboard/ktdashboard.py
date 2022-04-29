@@ -74,7 +74,6 @@ class KTdashboard:
         self.dashboard = pn.template.BootstrapTemplate(title='Kernel Tuner Dashboard')
         self.dashboard.sidebar.append(pn.Column(self.yvariable, self.xvariable, self.colorvariable))
         self.dashboard.main.append(self.scatter)
-        self.dashboard.servable()
 
     def __del__(self):
         self.cache_file_handle.close()
@@ -158,6 +157,8 @@ def cli():
             filename = sys.argv[2]
 
     db = KTdashboard(filename, demo=demo)
+
+    db.dashboard.servable()
 
     def dashboard_f():
         """ wrapper function to add the callback, doesn't work without this construct """
