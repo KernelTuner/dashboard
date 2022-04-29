@@ -35,10 +35,10 @@ class KTdashboard:
         data = list(cached_data["cache"].values())
         data = [d for d in data if d["time"] != 1e20]
 
-        # use all data or just the first 1% in demo mode
+        # use all data or just the first 1000 records in demo mode
         self.index = len(data)
         if self.demo:
-            self.index = len(data)//100
+            self.index = min(len(data), 1000)
 
         # figure out which keys are interesting
         single_value_tune_param_keys = [key for key in cached_data["tune_params_keys"] if len(cached_data["tune_params"][key]) == 1]
