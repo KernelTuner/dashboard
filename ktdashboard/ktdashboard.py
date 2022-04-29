@@ -78,6 +78,10 @@ class KTdashboard:
     def __del__(self):
         self.cache_file_handle.close()
 
+    def notebook(self):
+        """ Return a static version of the dashboard without the template """
+        return pn.Row(pn.Column(self.yvariable, self.xvariable, self.colorvariable), self.scatter)
+
     def update_colors(self, color_by):
         color_mapper = LinearColorMapper(palette='Viridis256', low=min(self.data_df[color_by]),
                                          high=max(self.data_df[color_by]))
