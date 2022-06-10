@@ -5,7 +5,7 @@ KTdashboard allows you to monitor, analyze, and visualize an active or completed
 Tuner](https://github.com/benvanwerkhoven/kernel_tuner/), a tool for automatic optimization of CPU and GPU computational 
 kernels.
 
-![Example dashboard usage image](dashboard.png)
+![Example dashboard usage image](dashboard.gif)
 
 ## Installation
 
