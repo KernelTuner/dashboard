@@ -1,5 +1,6 @@
 
-# KTdashboard - monitor your Kernel Tuner runs
+# KTdashboard
+![Kernel Tuner Dashboard logo](images/logo.png)
 
 KTdashboard allows you to monitor, analyze, and visualize an active or completed auto-tuning run of [Kernel 
 Tuner](https://github.com/benvanwerkhoven/kernel_tuner/), a tool for automatic optimization of CPU and GPU computational 
