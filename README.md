@@ -3,7 +3,7 @@
 ![Kernel Tuner Dashboard logo](images/logo.png)
 
 KTdashboard allows you to monitor, analyze, and visualize an active or completed auto-tuning run of [Kernel 
-Tuner](https://github.com/benvanwerkhoven/kernel_tuner/), a tool for automatic optimization of CPU and GPU computational 
+Tuner](https://github.com/KernelTuner/kernel_tuner/), a tool for automatic optimization of CPU and GPU computational 
 kernels.
 
 ![Example dashboard usage image](dashboard.gif)
@@ -12,7 +12,7 @@ kernels.
 
 For the moment the installation instructions are:
 ```
-git clone git@github.com:benvanwerkhoven/dashboard.git
+git clone git@github.com:KernelTuner/dashboard.git
 cd dashboard
 pip install -e .
 
@@ -44,5 +44,5 @@ ktdashboard my_cache_filename.json
 ## License, contributions, citation
 
 KTdashboard is considered part of the Kernel Tuner project, for licensing, contribution guide, and citation information please see
-[Kernel Tuner](https://github.com/benvanwerkhoven/kernel_tuner/).
+[Kernel Tuner](https://github.com/KernelTuner/kernel_tuner/).
 
