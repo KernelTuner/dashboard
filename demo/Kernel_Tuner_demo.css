@@ -1,0 +1,23 @@
+.reveal,
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  font-family: "Nunito";
+}
+
+.p {
+  font-family: "Assistant";
+}
+
+body.notebook_app.rise-enabled { 
+  background: url('img/slide_background.png');
+  background-position: left top;
+  height: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  padding-top: calc(50px + 2vh);
+}
