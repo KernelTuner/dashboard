@@ -30,10 +30,14 @@ class KTdashboard:
         cached_data = json.loads(filestr)
         self.kernel_name = cached_data["kernel_name"]
         self.device_name = cached_data["device_name"]
+        if "objective" in cached_data:
+            self.objective = cached_data["objective"]
+        else:
+            self.objective = "time"
 
         # get the performance data
         data = list(cached_data["cache"].values())
-        data = [d for d in data if d["time"] != 1e20]
+        data = [d for d in data if d[self.objective] != 1e20 and not isinstance(d[self.objective], str)]
 
         # use all data or just the first 1000 records in demo mode
         self.index = len(data)
