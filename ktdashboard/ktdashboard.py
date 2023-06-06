@@ -61,7 +61,7 @@ class KTdashboard:
         self.source = ColumnDataSource(data=self.data_df)
         self.data = data
 
-        plot_options=dict(plot_height=600, plot_width=900)
+        plot_options=dict(height=600, width=900)
         plot_options['tools'] = [HoverTool(tooltips=[(k, "@{"+k+"}" + ("{0.00}" if k in float_keys else "")) for k in single_value_keys]), "box_select,box_zoom,save,reset"]
 
         self.plot_options = plot_options
