@@ -179,7 +179,7 @@ def cli():
         """ wrapper function to add the callback, doesn't work without this construct """
         pn.state.add_periodic_callback(db.update_data, 1000)
         return db.dashboard
-    server = pn.serve(dashboard_f)
+    server = pn.serve(dashboard_f, show=False)
 
 
 
