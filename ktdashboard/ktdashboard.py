@@ -83,7 +83,7 @@ class KTdashboard:
 
         # actually build up the dashboard
         self.dashboard = pn.template.BootstrapTemplate(title='Kernel Tuner Dashboard')
-        self.dashboard.sidebar.append(pn.Column(self.yvariable, self.xvariable, self.colorvariable))
+        self.dashboard.sidebar.append(pn.Column(self.yvariable, self.xvariable, self.colorvariable, pn.layout.Divider()))
         self.dashboard.main.append(self.scatter)
 
     def __del__(self):
