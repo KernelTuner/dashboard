@@ -86,12 +86,30 @@ class KTdashboard:
         self.dashboard.sidebar.append(pn.Column(self.yvariable, self.xvariable, self.colorvariable, pn.layout.Divider()))
         self.dashboard.main.append(self.scatter)
 
+        self.multi_choice = list()
+        for tune_param in self.tune_param_keys:
+            values = list(set([d[tune_param] for d in data]))
+            multi_choice = pnw.MultiChoice(name=tune_param, value=values, options=values)
+            self.dashboard.sidebar.append(multi_choice)
+            pn.Row(pn.bind(self.update_data_selection, tune_param, multi_choice))
+
     def __del__(self):
         self.cache_file_handle.close()
 
     def notebook(self):
         """ Return a static version of the dashboard without the template """
         return pn.Row(pn.Column(self.yvariable, self.xvariable, self.colorvariable), self.scatter)
+
+    def update_data_selection(self, tune_param, multi_choice):
+        selection_key = tune_param
+        selection_values = multi_choice
+
+        mask = self.data_df[selection_key].isin(selection_values)
+        index = self.data_df.index[mask].values
+        self.index = index
+
+        data_df = self.data_df[mask]
+        self.source.data = data_df
 
     def update_colors(self, color_by):
         color_mapper = LinearColorMapper(palette='Viridis256', low=min(self.data_df[color_by]),
