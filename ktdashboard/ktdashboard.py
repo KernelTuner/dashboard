@@ -61,7 +61,9 @@ class KTdashboard:
         self.source = ColumnDataSource(data=self.data_df)
         self.data = data
 
-        plot_options=dict(height=600, width=900)
+        self.plot_width = 900
+        self.plot_height = 600
+        plot_options=dict(width=self.plot_width, min_width=self.plot_width, height=self.plot_height, min_height=self.plot_height)
         plot_options['tools'] = [HoverTool(tooltips=[(k, "@{"+k+"}" + ("{0.00}" if k in float_keys else "")) for k in single_value_keys]), "box_select,box_zoom,save,reset"]
 
         self.plot_options = plot_options
@@ -128,7 +130,9 @@ class KTdashboard:
         f.xaxis.axis_label = x
         f.yaxis.axis_label = y
 
-        pane = pn.Column(pn.pane.Markdown(f"## Auto-tuning {self.kernel_name} on {self.device_name}"), pn.pane.Bokeh(f))
+        bokeh_pane = pn.pane.Bokeh(object=f, min_width=self.plot_width, min_height=self.plot_height, max_width=self.plot_width, max_height=self.plot_height)
+
+        pane = pn.Column(pn.pane.Markdown(f"## Auto-tuning {self.kernel_name} on {self.device_name}"), bokeh_pane)
 
         return pane
 
