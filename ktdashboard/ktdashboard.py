@@ -2,6 +2,7 @@
 import json
 import sys
 import os
+import copy
 
 import panel as pn
 import panel.widgets as pnw
@@ -85,6 +86,7 @@ class KTdashboard:
         self.data = data
         self.data_df = data_df
         self.source = ColumnDataSource(data=self.data_df)
+        self.selected_tune_params = copy.deepcopy(all_tune_params)
 
         self.plot_width = 900
         self.plot_height = 600
@@ -158,10 +160,20 @@ class KTdashboard:
         return pn.Row(pn.Column(self.yvariable, self.xvariable, self.colorvariable), self.scatter)
 
     def update_data_selection(self, tune_param, multi_choice):
+        """ Update view according to values selected by the user """
         selection_key = tune_param
         selection_values = multi_choice
 
-        mask = self.data_df[selection_key].isin(selection_values)
+        # The idea here is to remember multiple selections across different tunable parameters
+        # but also allowing these to shrink or grow over time
+        # this is why the mask is recomputed every time the selection changes
+        self.selected_tune_params[selection_key] = selection_values
+
+        # Cross selection based on all selections in all tunable parameters
+        mask = pd.Series(True, index=self.data_df.index)
+        for k,v in self.selected_tune_params.items():
+            mask &= self.data_df[k].isin(v)
+
         index = self.data_df.index[mask].values
         self.index = index
 
