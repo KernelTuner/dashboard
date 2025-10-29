@@ -2,7 +2,6 @@
 import json
 import sys
 import os
-import copy
 
 import panel as pn
 import panel.widgets as pnw
@@ -86,7 +85,7 @@ class KTdashboard:
         self.data = data
         self.data_df = data_df
         self.source = ColumnDataSource(data=self.data_df)
-        self.selected_tune_params = copy.deepcopy(all_tune_params)
+        self.selected_tune_params = {key: all_tune_params[key].copy() for key in tune_param_keys}
 
         self.plot_width = 900
         self.plot_height = 600
